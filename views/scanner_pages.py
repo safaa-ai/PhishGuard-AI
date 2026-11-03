@@ -169,6 +169,15 @@ def _combined_tab():
                 st.markdown(f"- {step}")
 
 def render():
+    st.markdown("""
+    <style>
+    /* تعديل لون الكتابة داخل صناديق إدخال النصوص والـ Text Area ليصبح واضحاً وسلساً */
+    .stTextInput input, .stTextArea textarea {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
     _init_state()
     ui.page_header("Threat Scanner", "Automated analysis across multiple payload channels")
     t1, t2, t3 = st.tabs(["Email Analysis", "URL Inspection", "Threat Correlation"])
