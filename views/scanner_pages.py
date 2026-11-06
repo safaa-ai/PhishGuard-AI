@@ -53,6 +53,9 @@ RECOMMENDATIONS = {
 def _init_state():
     for key in ("email_result", "email_text_scanned", "url_result", "url_scanned", "combined_result"):
         st.session_state.setdefault(key, None)
+def _load_sample():
+    st.session_state["email_input_field"] = SAMPLE_EMAIL
+    st.session_state["email_autoscan"] = True
 
 def _email_tab():
     st.markdown("##### Input Raw Email Payload")
@@ -63,12 +66,15 @@ def _email_tab():
         placeholder="Paste full raw email headers and body content...",
         label_visibility="collapsed",
     )
-    c1, c2, c3 = st.columns([1.5, 1, 1])
+        c1, c2, c3 = st.columns([1.5, 1, 1])
+
     analyze = c1.button("Execute Email Scan", type="primary", use_container_width=True)
-    if c2.button("Load Sample Data", use_container_width=True):
+
+    c2.button("Load Sample Data", use_container_width=True, on_click=_load_sample)
+
+    if st.session_state.pop("email_autoscan", False):
         st.session_state["email_result"] = None
         analyze = True
-        email_text = SAMPLE_EMAIL
 
     if analyze and email_text.strip():
         try:
