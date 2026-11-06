@@ -7,10 +7,9 @@ from views import ui_components as ui
 from views.backend import BackendError, analyze_email, analyze_url, get_combined_assessment, save_scan
 
 SAMPLE_EMAIL = (
-    "Subject: URGENT - Security Verification Required\n\n"
-    "Dear Customer, unusual activity was detected on your account. Access has been restricted until "
-    "identity verification is complete. Click the link below immediately to unlock your account: "
-    "http://secure-login.paypal.account.verify.bit.ly/update"
+    "Subject: Your account has been suspended\n\n"
+    "Dear customer, we detected unusual activity. Verify your password immediately "
+    "or your account will be permanently closed. Click here to confirm your identity."
 )
 SAMPLE_URL = "http://secure-login.paypal.account.verify.bit.ly/update"
 
