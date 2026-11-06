@@ -20,6 +20,7 @@ STATUS_MAP = {
     "Phishing": (RED, "High Risk / Phishing Detected"),
     "Suspicious": (AMBER, "Medium Risk / Suspicious"),
     "Legitimate": (GREEN, "Low Risk / Clean"),
+    "Safe": (GREEN, "Low Risk / Clean"),
     "High Risk": (RED, "High Risk Level"),
     "Medium Risk": (AMBER, "Medium Risk Level"),
     "Low Risk": (GREEN, "Low Risk Level"),
