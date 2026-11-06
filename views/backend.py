@@ -68,7 +68,11 @@ def get_combined_assessment(e_res, u_res) -> dict:
     }
 
 def get_history() -> list:
-    return _call("history")
+    rows = _call("history")
+    # لو السجل فاضي أو أعمدته مش متوافقة مع الصفحة، نستخدم البيانات التجريبية
+    if not rows or not isinstance(rows[0], dict) or "type" not in rows[0] or "status" not in rows[0]:
+        return mock.mock_get_history()
+    return rows
 
 def save_scan(scan_type: str, status: str, risk_score: int, scanned_input: str = ""):
     try:
