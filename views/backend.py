@@ -23,7 +23,8 @@ def _call(key: str, *args):
         mod = importlib.import_module(mod_name)
         func = getattr(mod, func_name)
         return func(*args)
-    except Exception:
+    except Exception as err:
+        st.warning(f"⚠️ الباك إند فشل واتحول للنسخة التجريبية: {type(err).__name__}: {err}")
         return fallback(*args)
 
 def analyze_email(text: str) -> dict:
