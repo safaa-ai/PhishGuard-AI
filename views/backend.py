@@ -34,7 +34,38 @@ def analyze_url(url: str) -> dict:
     return _call("url", url)
 
 def get_combined_assessment(e_res, u_res) -> dict:
-    return _call("fusion", e_res, u_res)
+    def _score(r):
+        status = str(r.get("status", "")).lower()
+        conf = float(r.get("confidence", 0))
+        if conf > 1:
+            conf = conf / 100
+        if status in ("phishing", "malicious", "unsafe"):
+            return conf * 100
+        if status == "suspicious":
+            return 35 + 35 * conf
+        return (1 - conf) * 100
+
+    results = [r for r in (e_res, u_res) if r]
+    if not results:
+        raise BackendError("At least one analysis result is required.")
+
+    score = round(sum(_score(r) for r in results) / len(results))
+
+    if score >= 70:
+        level = "High Risk"
+        directive = "Block communication and reset access credentials immediately."
+    elif score >= 30:
+        level = "Medium Risk"
+        directive = "Verify the sender and the link through a trusted channel before interacting."
+    else:
+        level = "Low Risk"
+        directive = "No major threat indicators found. Continue following safe practices."
+
+    return {
+        "overall_risk_score": score,
+        "risk_level": level,
+        "recommendation": directive,
+    }
 
 def get_history() -> list:
     return _call("history")
