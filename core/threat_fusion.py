@@ -1,4 +1,3 @@
-
 def calculate_risk(result):
     status = result["status"].lower()
     confidence = float(result["confidence"])
@@ -12,6 +11,9 @@ def calculate_risk(result):
     if status in ["phishing", "malicious", "unsafe"]:
         risk_score = confidence * 100
 
+    elif status == "suspicious":
+        risk_score = 35 + 35 * confidence
+
     elif status in ["legitimate", "safe", "benign"]:
         risk_score = (1 - confidence) * 100
 
@@ -19,6 +21,7 @@ def calculate_risk(result):
         raise ValueError(f"Unknown status: {status}")
 
     return round(risk_score, 2)
+
 
 def get_risk_level(risk_score):
 
@@ -30,6 +33,7 @@ def get_risk_level(risk_score):
 
     else:
         return "High"
+
 
 def fuse_threats(email_result=None, url_result=None):
 
@@ -55,6 +59,7 @@ def fuse_threats(email_result=None, url_result=None):
         "risk_level": risk_level
     }
 
+
 def collect_reasons(email_result=None, url_result=None):
 
     reasons = []
@@ -70,11 +75,12 @@ def collect_reasons(email_result=None, url_result=None):
                 )
 
     if url_result is not None:
-        if url_result["status"].lower() == "phishing":
+        if url_result["status"].lower() in ["phishing", "suspicious"]:
             url_reasons = url_result.get("reasons", [])
             reasons.extend(url_reasons)
 
     return reasons
+
 
 def get_recommendations(risk_level):
 
@@ -98,6 +104,7 @@ def get_recommendations(risk_level):
             "Keep your security software updated."
         ]
 
+
 def analyze_threat(email_result=None, url_result=None):
 
     fusion_result = fuse_threats(email_result, url_result)
@@ -114,4 +121,25 @@ def analyze_threat(email_result=None, url_result=None):
         "reasons": reasons,
         "recommendations": recommendations
     }
-    
+
+
+PRIMARY_DIRECTIVES = {
+    "High": "Block communication and reset access credentials immediately.",
+    "Medium": "Verify the sender and the link through a trusted channel before interacting.",
+    "Low": "No major threat indicators found. Continue following safe practices.",
+}
+
+
+def get_combined_assessment(email_result=None, url_result=None):
+    """Entry point used by the Streamlit UI (views/backend.py)."""
+
+    result = analyze_threat(email_result, url_result)
+    level = result["risk_level"]
+
+    return {
+        "overall_risk_score": round(result["risk_score"]),
+        "risk_level": f"{level} Risk",
+        "recommendation": PRIMARY_DIRECTIVES[level],
+        "reasons": result["reasons"],
+        "recommendations": result["recommendations"],
+    }
