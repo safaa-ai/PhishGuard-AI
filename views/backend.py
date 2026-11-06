@@ -39,8 +39,18 @@ def get_combined_assessment(e_res, u_res) -> dict:
 def get_history() -> list:
     return _call("history")
 
-def save_scan(scan_type: str, status: str, risk_score: int):
-    return _call("save", scan_type, status, risk_score)
+def save_scan(scan_type: str, status: str, risk_score: int, scanned_input: str = ""):
+    try:
+        from core import database
+        database.initialize_db()
+        return database.save_scan(
+            scan_type,
+            scanned_input,
+            {"status": status, "confidence": risk_score / 100},
+            {"risk_score": risk_score, "risk_level": status},
+        )
+    except Exception as err:
+        st.warning(f"تعذر حفظ السجل: {type(err).__name__}: {err}")
 
 def get_model_accuracy() -> float:
     return 0.964
