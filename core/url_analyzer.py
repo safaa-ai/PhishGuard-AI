@@ -14,6 +14,10 @@ TRUSTED_DOMAINS = {
     "google.com", "github.com", "wikipedia.org", "youtube.com",
     "microsoft.com", "apple.com", "amazon.com", "facebook.com",
     "linkedin.com", "stackoverflow.com", "python.org", "streamlit.io",
+    "chatgpt.com", "openai.com", "claude.ai", "anthropic.com",
+    "bbc.com", "nytimes.com", "coursera.org", "x.com", "twitter.com",
+    "instagram.com", "whatsapp.com", "netflix.com", "zoom.us",
+    "gmail.com", "outlook.com", "live.com", "yahoo.com",
 }
 
 
@@ -96,7 +100,7 @@ def analyze_url(url: str) -> dict:
         status = "Legitimate"
         confidence = 0.95
         reasons.append("Domain is on the trusted websites list.")
-    elif phishing_prob >= 0.85:
+    elif phishing_prob >= 0.85 and reasons:
         status = "Phishing"
         confidence = phishing_prob
     elif phishing_prob >= 0.5:
